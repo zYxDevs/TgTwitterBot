@@ -26,9 +26,7 @@ Send {HLR}help to explore !
 
 
 def limit_check(client, query):
-    if len(query.query) == 0:
-        return True
-    return False
+    return len(query.query) == 0
 
 
 @Client.on_inline_query(~filters.user(AUTH))
