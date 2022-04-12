@@ -14,7 +14,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton as Button
 
 LOGGER = logging.getLogger("TGTwitterBot")
 
-AUTH = list(set(int(a) for a in Var.AUTHUSERS.split()))
+AUTH = list({int(a) for a in Var.AUTHUSERS.split()})
 HNDLR = Var.HNDLR
 
 auth = tweepy.OAuthHandler(Var.CONSUMER_KEY, Var.CONSUMER_SECRET)

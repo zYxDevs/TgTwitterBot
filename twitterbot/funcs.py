@@ -13,12 +13,7 @@ from pyrogram.types import (
 
 
 def mkease(counts, cstatus):
-    text = str(counts)
-    if cstatus:
-        text += " ❣"
-    else:
-        text += " ♡"
-    return text
+    return str(counts) + (" ❣" if cstatus else " ♡")
 
 
 def simstuff(user):
@@ -65,7 +60,7 @@ def user_eazy(bunch):
             InlineQueryResultArticle(
                 title=user["name"],
                 description=f"@{uname}",
-                url="https://twitter.com/" + uname,
+                url=f"https://twitter.com/{uname}",
                 thumb_url=user["profile_image_url"],
                 reply_markup=reply_markup,
                 input_message_content=InputTextMessageContent(
@@ -73,17 +68,15 @@ def user_eazy(bunch):
                 ),
             )
         )
+
     return result[:50]
 
 
 def status_reply_markup(status):
-    OUT = []
     status = status._json
     user = status["user"]
-    is_fav = "ulk"
     favbutn = mkease(status["favorite_count"], status["favorited"])
-    if status["favorited"]:
-        is_fav = "lk"
+    is_fav = "lk" if status["favorited"] else "ulk"
     rt_ = "urt"
     rt_btn = "Undo Re-Tweet"
     if not status["retweeted"]:
@@ -95,18 +88,22 @@ def status_reply_markup(status):
         InlineKeyboardButton("View", url=Link),
         InlineKeyboardButton("User", callback_data=f"user{user['id']}"),
     ]
-    OUT.append(COL_1)
-    OUT.append(
-        [InlineKeyboardButton(favbutn, callback_data=f"favr_{is_fav}_{status['id']}")]
-    )
-    OUT.append(
-        [InlineKeyboardButton(rt_btn, callback_data=f"rtt_{rt_}_{status['id']}")]
-    )
-    return OUT
+    return [
+        COL_1,
+        [
+            InlineKeyboardButton(
+                favbutn, callback_data=f"favr_{is_fav}_{status['id']}"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                rt_btn, callback_data=f"rtt_{rt_}_{status['id']}"
+            )
+        ],
+    ]
 
 
 def user_reply_markup(user):
-    OUT = []
     user = user._json
     fl = "ufl"
     fl_but = "Follow"
@@ -114,11 +111,12 @@ def user_reply_markup(user):
         fl = "fl"
         fl_but = "UnFollow"
     Link = "https://twitter.com/" + user["screen_name"]
-    OUT.append(
+    return [
         [
             InlineKeyboardButton("View", url=Link),
-            InlineKeyboardButton(fl_but, callback_data=f"fuflow_{fl}_{user['id']}"),
-        ]
-    )
-    OUT.append([InlineKeyboardButton(text="Help Menu", callback_data="openmenu")])
-    return OUT
+            InlineKeyboardButton(
+                fl_but, callback_data=f"fuflow_{fl}_{user['id']}"
+            ),
+        ],
+        [InlineKeyboardButton(text="Help Menu", callback_data="openmenu")],
+    ]
